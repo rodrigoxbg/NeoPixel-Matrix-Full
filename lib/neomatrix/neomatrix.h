@@ -24,6 +24,8 @@ class NeoMatrix {
     void fillRect(int16_t x, int16_t y, int16_t w, int16_t h, uint32_t color);
     void drawCircle(int16_t x0, int16_t y0, int16_t r, uint32_t color);
     void fillCircle(int16_t x0, int16_t y0, int16_t r, uint32_t color);
+    void drawWave(int8_t y, float time, uint8_t amplitud, uint8_t longitud, uint32_t color);
+
 
     void drawChar(unsigned char c,int16_t x, int16_t y, uint32_t color, uint32_t color2 = 0, uint8_t middle = 5);
     void drawString(const char *string, int16_t x, int16_t y, uint32_t color, uint32_t color2 = 0, uint8_t middle = 5);
@@ -41,6 +43,7 @@ class NeoMatrix {
     uint16_t rows;
     uint16_t cols;
     uint8_t digitWidth(int8_t num);
+    float calc_wave(uint8_t x, float time, uint8_t amplitud, uint8_t longitud);
     Adafruit_NeoPixel pixels;
 };
 

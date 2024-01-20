@@ -1,6 +1,6 @@
 #include "neomatrix.h"
-#include "../lib/fontchars.h"
-#include "../lib/fontnumbers.h"
+#include "fontchars.h"
+#include "fontnumbers.h"
 
 NeoMatrix::NeoMatrix(uint16_t rows, uint16_t cols, uint8_t pinNeo) : pixels(rows * cols, pinNeo, NEO_GRB + NEO_KHZ800) {
     this->rows = rows;
@@ -161,6 +161,28 @@ uint8_t NeoMatrix::charWidth(unsigned char c) {
     else {index = 0;return 0;}
     return LETRAS[index][8];
 }
+
+float NeoMatrix::calc_wave(uint8_t x, float time, uint8_t amplitud, uint8_t longitud) {
+  float y = amplitud * sin(2 * PI * x / longitud - time);
+  return y;
+}
+
+void NeoMatrix::drawWave(int8_t y, float time, uint8_t amplitud, uint8_t longitud, uint32_t color) {
+  for (int8_t x = 0; x < cols; x++) {
+    int8_t y2 = y + calc_wave(x, time, amplitud, longitud);
+    pixel(x, y2, color);
+    pixel(x, y2-1, color);
+    pixel(x, y2+1, color);
+  }
+  /*
+  for x in range(32):
+            y = 4 + round(onda(x, tiempo, amplitud, longitud))  # Calcular la posición vertical
+            chip.pixel(x, y, brillo)
+            chip.pixel(x, y - 1, brillo)
+            chip.pixel(x, y + 1, brillo)
+  */
+}
+
 // ===================================================================
 
 void NeoMatrix::drawChar(unsigned char c,int16_t x, int16_t y, uint32_t color, uint32_t color2, uint8_t middle) {
@@ -323,12 +345,10 @@ void NeoMatrix::drawImage565(const uint16_t* bitmap, int16_t x, int16_t y, uint1
             green = int((green * scaledBrightness) / 255);
             blue = int((blue * scaledBrightness) / 255);
 
-            // Combinar componentes para obtener el color modificado
-            uint32_t modifiedColor = ((red & 0xF8) << 8) | ((green & 0xFC) << 3) | (blue >> 3);
-
             // Graficar el pixel
             pixel(x + j, y + i, pixels.Color(red,green,blue));
 
         }
     }
 }
+
