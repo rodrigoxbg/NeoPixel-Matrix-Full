@@ -207,7 +207,6 @@ void NeoMatrix::drawString(const char *string, int16_t x, int16_t y, uint32_t co
     }
 }
 
-
 uint8_t NeoMatrix::digitWidth(int8_t num) {
     int index;
     if (num >= 0 && num <= 11) {
@@ -244,7 +243,6 @@ void NeoMatrix::drawDigit(int16_t num, int16_t x, int16_t y, uint32_t color, uin
     }
 }
 
-
 void NeoMatrix::drawNumber(float num, int16_t x, int16_t y, uint32_t color, uint32_t color2, uint8_t middle) {
     if (num < 0.0) {
         drawDigit(11, x, y, color, color2, middle);  // Dibuja el signo "-"
@@ -271,12 +269,66 @@ void NeoMatrix::drawNumber(float num, int16_t x, int16_t y, uint32_t color, uint
     }
 }
 
-void NeoMatrix::drawBitmap(int16_t x, int16_t y, const uint8_t bitmap[], int16_t w, int16_t h, uint32_t color) {
-    for (int16_t j = 0; j < h; j++) {
-        for (int16_t i = 0; i < w; i++) {
-            if (bitmap[j * w + i]) {
-                pixel(x + i, y + j, color);
-            }
+void NeoMatrix::drawBitmap(const uint32_t* bitmap, int16_t x, int16_t y, uint16_t w, uint16_t  h, uint32_t color, uint32_t color2, uint8_t middle) {
+  // Ejemplo de bitmap
+  /*
+  const uint32_t miBitmap[] PROGMEM= {
+      0b11111111001,
+      0b10000001001,
+      0b10000001000,
+      0b10010001001,
+      0b10000001110,
+      0b10000001001,
+      0b10000001001,
+      0b11111111000
+    };
+  */
+
+  if(color2 == 0){color2 = color;}
+  for (int16_t i = 0; i < h; i++) {
+    uint32_t line = bitmap[i];
+    for (int16_t j = 0; j < w; j++) {
+      if (line & (1 << (w - j - 1))) {
+        if(i<middle){
+          pixel(x + j, y + i, color);
+        }else{
+          pixel(x + j, y + i, color2);
+        }
+      }
+    }
+  }
+}
+
+
+void NeoMatrix::drawImage565(const uint16_t* bitmap, int16_t x, int16_t y, uint16_t w, uint16_t h, uint8_t brightness) {
+    // Convert Images from https://javl.github.io/image2cpp/
+    // Parameters: BG:black, output: arduino code single bitmap, draw mode: horizontal 2bytes per pixel 565
+    if (brightness > 100) {
+        brightness = 100;
+    }
+
+    uint8_t scaledBrightness = (brightness * 255) / 100;
+
+    for (uint16_t i = 0; i < h; i++) {
+        for (uint16_t j = 0; j < w; j++) {
+            uint16_t pixelColor = pgm_read_word(bitmap + i * w + j);
+
+            // Descomponer el color en componentes RGB565
+            uint8_t red = (pixelColor >> 8) & 0xF8;
+            uint8_t green = (pixelColor >> 3) & 0xFC;
+            uint8_t blue = (pixelColor << 3) & 0xF8;
+
+            // Aplicar el brillo
+            red = int((red * scaledBrightness) / 255);
+            green = int((green * scaledBrightness) / 255);
+            blue = int((blue * scaledBrightness) / 255);
+
+            // Combinar componentes para obtener el color modificado
+            uint32_t modifiedColor = ((red & 0xF8) << 8) | ((green & 0xFC) << 3) | (blue >> 3);
+
+            // Graficar el pixel
+            pixel(x + j, y + i, pixels.Color(red,green,blue));
+
         }
     }
 }

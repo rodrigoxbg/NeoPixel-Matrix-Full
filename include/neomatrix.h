@@ -27,14 +27,14 @@ class NeoMatrix {
 
     void drawChar(unsigned char c,int16_t x, int16_t y, uint32_t color, uint32_t color2 = 0, uint8_t middle = 5);
     void drawString(const char *string, int16_t x, int16_t y, uint32_t color, uint32_t color2 = 0, uint8_t middle = 5);
-    
-    //void drawCharStereo(unsigned char c,int16_t x, int16_t y, uint8_t middle, uint32_t color, uint32_t color2);
-    //void drawStringStereo(const char *string, int16_t x, int16_t y, uint8_t middle, uint32_t color, uint32_t color2);
-    
+        
     void drawDigit(int16_t num, int16_t x, int16_t y, uint32_t color, uint32_t color2 = 0, uint8_t middle = 5);
     void drawNumber(float num, int16_t x, int16_t y, uint32_t color, uint32_t color2 = 0, uint8_t middle = 5);
     
-    void drawBitmap(int16_t x, int16_t y, const uint8_t bitmap[], int16_t w, int16_t h, uint32_t color);
+    void drawBitmap(const uint32_t* bitmap, int16_t x, int16_t y, uint16_t w, uint16_t  h, uint32_t color, uint32_t color2=0, uint8_t middle=5);
+    
+    void drawImage565(const uint16_t* bitmap, int16_t x, int16_t y, uint16_t w, uint16_t  h, uint8_t brightness=100);
+
     //====================================================================
     uint8_t charWidth(unsigned char c);
   private:
