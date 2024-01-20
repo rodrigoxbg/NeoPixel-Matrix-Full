@@ -161,48 +161,6 @@ uint8_t NeoMatrix::charWidth(unsigned char c) {
     else {index = 0;return 0;}
     return LETRAS[index][8];
 }
-/*
-void NeoMatrix::drawChar(unsigned char c,int16_t x, int16_t y, uint32_t color, uint32_t bg) {
-// Calcula el índice correcto en la matriz de letras
-    
-    int index;
-    if (c == ' ') {index = 1;} 
-    else if (c >= '0' && c <= '9') {index = c - '0' + 2;} 
-    else if (c >= 'A' && c <= 'Z') {index = c - 'A' + 12;} 
-    else if (c >= 'a' && c <= 'z') {index = c - 'a' + 38;} 
-    else {index = 0;return;}
-
-    Serial.println("El caracter es: "+String(c)+" y su index es: "+String(index));
-    const uint8_t* letter = LETRAS[index];
-    for (int8_t i = 0; i < 8; i++) {
-        uint8_t line = letter[i];
-        for (int8_t j = 0; j < 8; j++) {
-            int8_t mirroredJ;
-            if(letter[8]== 0x02){mirroredJ = letter[8] + 2 - j;}
-            else if(letter[8]==0x04){mirroredJ = letter[8] + 1 - j; }
-            else if(letter[8]==0x05){mirroredJ = letter[8] + 1 - j; }
-            else if(letter[8]==0x07){mirroredJ = letter[8] -1 - j;}
-            else{mirroredJ = letter[8] - j;}
-
-            if (line & (1 << mirroredJ)) {
-                pixel(x + j, y + i, color);
-            } else if (bg != color && bg != 0) {
-                pixel(x + j, y + i, bg);
-            }
-        }
-    }
-}
-
-void NeoMatrix::drawString(const char *string, int16_t x, int16_t y, uint32_t color, uint32_t bg) {
-    int16_t offset = 0;
-    int16_t len = strlen(string);
-    for (int16_t i = 0; i < len; i++) {
-        drawChar(string[i], x + offset, y, color, bg);
-        offset += charWidth(string[i]) + 1;
-    }
-}*/
-
-
 // ===================================================================
 
 void NeoMatrix::drawChar(unsigned char c,int16_t x, int16_t y, uint32_t color, uint32_t color2, uint8_t middle) {
