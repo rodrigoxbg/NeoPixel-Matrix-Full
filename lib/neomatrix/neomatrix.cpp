@@ -14,6 +14,10 @@ void NeoMatrix::show() {pixels.show();}
 void NeoMatrix::setBrightness(uint8_t brightness) {pixels.setBrightness(brightness);}
 uint16_t NeoMatrix::numPixels() {return pixels.numPixels();}
 // ----------------------------------------------------------------
+void NeoMatrix::fill(uint8_t r, uint8_t g, uint8_t b) {
+  pixels.fill(pixels.Color(r, g, b));
+  
+  }
 
 
 void NeoMatrix::pixel(uint16_t col,uint16_t row, uint32_t color) {
@@ -185,28 +189,34 @@ void NeoMatrix::drawWave(int8_t y, float time, uint8_t amplitud, uint8_t longitu
 
 // ===================================================================
 
-void NeoMatrix::drawChar(unsigned char c,int16_t x, int16_t y, uint32_t color, uint32_t color2, uint8_t middle) {
-    // Graficaré las letras de un color diferente de la mitad para arriba y de la mitad para abajo
-    // Calcula el índice correcto en la matriz de letras
-    if(color2 == 0){color2 = color;}
+uint16_t NeoMatrix::char_getIndex(unsigned char c) {
     int index;
     if (c == ' ') {index = 1;} 
     else if (c >= '0' && c <= '9') {index = c - '0' + 2;} 
     else if (c >= 'A' && c <= 'Z') {index = c - 'A' + 12;} 
     else if (c >= 'a' && c <= 'z') {index = c - 'a' + 38;} 
-    else {index = 0;return;}
+    else {index = 0;return 0;}
+    return index;
+}
+
+void NeoMatrix::drawChar(unsigned char c,int16_t x, int16_t y, uint32_t color, uint32_t color2, uint8_t middle) {
+    // Graficaré las letras de un color diferente de la mitad para arriba y de la mitad para abajo
+    // Calcula el índice correcto en la matriz de letras
+    if(color2 == 0){color2 = color;}
+    int index = char_getIndex(c);
 
     const uint8_t* letter = LETRAS[index];
     for (int8_t i = 0; i < 8; i++) {
         uint8_t line = letter[i];
         for (int8_t j = 0; j < 8; j++) {
             int8_t mirroredJ;
+            mirroredJ = letter[8]+1 - j;
             if(letter[8]== 0x02){mirroredJ = letter[8] + 2 - j;}
             else if(letter[8]==0x04){mirroredJ = letter[8] + 1 - j; }
             else if(letter[8]==0x05){mirroredJ = letter[8] + 1 - j; }
             else if(letter[8]==0x07){mirroredJ = letter[8] -1 - j;}
             else{mirroredJ = letter[8] - j;}
-
+            
             if (line & (1 << mirroredJ)) {
                 if(i<middle){
                     pixel(x + j, y + i, color);
@@ -322,6 +332,7 @@ void NeoMatrix::drawBitmap(const uint32_t* bitmap, int16_t x, int16_t y, uint16_
 }
 
 
+
 void NeoMatrix::drawImage565(const uint16_t* bitmap, int16_t x, int16_t y, uint16_t w, uint16_t h, uint8_t brightness) {
     // Convert Images from https://javl.github.io/image2cpp/
     // Parameters: BG:black, output: arduino code single bitmap, draw mode: horizontal 2bytes per pixel 565
@@ -350,5 +361,49 @@ void NeoMatrix::drawImage565(const uint16_t* bitmap, int16_t x, int16_t y, uint1
 
         }
     }
+}
+
+void NeoMatrix::text_scroll(String text, uint8_t speed, uint32_t color, uint32_t color2, uint8_t middle) {
+    int16_t textWidth = 0;
+    for (int i = 0; i < text.length(); i++) {
+        textWidth += charWidth(text[i]) + 1;
+    }
+    for (int i = 0; i < textWidth + 32; i++) {
+        clear();
+        drawString(text.c_str(), 32 - i, 0, color, color2, middle);
+        show();
+        delay(speed);
+    }
+}
+
+void NeoMatrix::char_fill(const char c,uint8_t x, uint8_t y, uint32_t color, uint8_t offsetx, uint32_t color2, uint8_t middle) {
+    if(color2 == 0) color2 = color;
+    int index = char_getIndex(c);
+    const uint8_t* letter = LETRAS[index];
+    for (int f=0; f < 8; f++){
+        uint8_t line = letter[f];
+        for (int p=0; p <= charWidth(c); p++){
+            int8_t mirroredJ;
+            if(letter[8]== 0x02){mirroredJ = letter[8] + 2 - p;}
+            else if(letter[8]==0x04){mirroredJ = letter[8] + 1 - p; }
+            else if(letter[8]==0x05){mirroredJ = letter[8] + 1 - p; }
+            else if(letter[8]==0x07){mirroredJ = letter[8] -1 - p;}
+            else{mirroredJ = letter[8] - p;}
+            if(line & (1 << mirroredJ)){
+                for (int i = x + offsetx; i >= x + p; i--) {
+                    pixel(i + 1, f+y, pixels.Color(0, 0, 0));
+                    if(f<middle){
+                        pixel(i, f+y, color);
+                    }else{
+                        pixel(i, f+y, color2);
+                    }
+                    show();
+                    delay(80);
+                }
+            }
+        }
+
+    }
+   
 }
 
