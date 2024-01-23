@@ -46,8 +46,7 @@ void NeoAnimations::movePixel(Objetopixel gusanos[], int lenarray, uint16_t step
     }
 }
 
-
-void NeoAnimations::worm_border(uint32_t color, uint8_t direction, uint8_t speed) {
+void NeoAnimations::border(uint32_t color, uint8_t direction, uint8_t speed) {
     int vector[2];
     if(direction == 0){
         vector[0] = 1;
@@ -66,6 +65,7 @@ void NeoAnimations::worm_border(uint32_t color, uint8_t direction, uint8_t speed
     Objetopixel gusanos[1] = {Objetopixel(color, 0, 0, vector)};
     movePixel(gusanos,1, 2*(cols) + 2*(rows-2), speed);
 }
+
 void NeoAnimations::worms_border(uint32_t color, uint32_t color2, uint8_t large, uint8_t spins, uint8_t speed) {
     int vector1[2] = {1, 0};
     int vector2[2] = {-1, 0};
@@ -97,9 +97,6 @@ void NeoAnimations::worms_border(uint32_t color, uint32_t color2, uint8_t large,
     movePixel(gusanos,4, (2*(cols) + 2*(rows-2))*spins, speed);
     movePixel(gusanos2,2, 2*large, speed);
 }
-
-
-
 
 void NeoAnimations::image_scroll(const uint16_t* bitmap, uint16_t w, uint16_t  h, uint8_t brightness) {
     for (int j = -(h - 1); j < 8; j++) {
@@ -171,3 +168,5 @@ void NeoAnimations::bars(uint32_t color, uint8_t width, uint8_t direction, bool 
          }
    }
 }
+
+

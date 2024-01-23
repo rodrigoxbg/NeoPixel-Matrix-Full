@@ -86,6 +86,18 @@ void NeoMatrix::drawRect(int16_t x, int16_t y, int16_t w, int16_t h, uint32_t co
     }
 }
 
+void NeoMatrix::drawFastVLine(int16_t x, int16_t y, int16_t h, uint32_t color) {
+    for(int16_t q = y; q < y + h; q++) {
+      pixel(x, q, color);
+    }
+}
+
+void NeoMatrix::drawFastHLine(int16_t x, int16_t y, int16_t w, uint32_t color) {
+    for(int16_t p = x; p < x + w; p++) {
+      pixel(p, y, color);
+    }
+}
+
 void NeoMatrix::fillRect(int16_t x, int16_t y, int16_t w, int16_t h, uint32_t color) {
     for(int16_t p = x; p < x + w; p++) {
       for(int16_t q = y; q < y + h; q++) {
@@ -331,8 +343,6 @@ void NeoMatrix::drawBitmap(const uint32_t* bitmap, int16_t x, int16_t y, uint16_
   }
 }
 
-
-
 void NeoMatrix::drawImage565(const uint16_t* bitmap, int16_t x, int16_t y, uint16_t w, uint16_t h, uint8_t brightness) {
     // Convert Images from https://javl.github.io/image2cpp/
     // Parameters: BG:black, output: arduino code single bitmap, draw mode: horizontal 2bytes per pixel 565
@@ -407,3 +417,51 @@ void NeoMatrix::char_fill(const char c,uint8_t x, uint8_t y, uint32_t color, uin
    
 }
 
+void NeoMatrix::char_starwar(const char c,uint8_t posx, uint8_t posy, uint32_t color, uint8_t speed) {
+    int index = char_getIndex(c);
+    const uint8_t* letter = LETRAS[index];
+    bool control = true;
+    for(int i=0; i<8; i++){
+        uint8_t line = letter[i];
+        if(control){
+          drawFastHLine(posx, posy + i, rows-posx, color);
+          show();
+          delay(speed);
+          drawFastHLine(posx, posy + i, rows-posx, 0x0000);
+          show();
+          delay(speed);
+        }
+        else{
+          fillRect(posx, posy + i, cols-posx, 3, color);
+          show();
+          delay(speed);
+          fillRect(posx, posy + i, cols-posx, 3, 0x000);
+          show();
+          delay(speed);
+        }
+        control = !control;
+        for(int f=0; f<charWidth(c); f++){
+            int8_t mirroredJ;
+            if(letter[8]== 0x02){mirroredJ = letter[8] + 2 - f;}
+            else if(letter[8]==0x04){mirroredJ = letter[8] + 1 - f; }
+            else if(letter[8]==0x05){mirroredJ = letter[8] + 1 - f; }
+            else if(letter[8]==0x07){mirroredJ = letter[8] -1 - f;}
+            else{mirroredJ = letter[8] - f;}
+            if(line & (1 << mirroredJ)){
+                pixel(posx + f, posy + i, color);
+            }
+        }
+        show();
+        delay(speed);
+    }
+}
+
+void NeoMatrix::text_starwar(const char *string, uint8_t posx, uint8_t posy, uint32_t color, uint8_t speed) {
+    int16_t offset = 0;
+    int16_t len = strlen(string);
+    for (int16_t i = 0; i < len; i++) {
+        char c = string[i];
+        char_starwar(c, posx + offset, posy, color, speed);
+        offset += charWidth(c) + 1;
+    }
+}

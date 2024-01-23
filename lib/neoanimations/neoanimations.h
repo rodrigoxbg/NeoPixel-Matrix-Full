@@ -11,12 +11,12 @@ class NeoAnimations {
         void clear();
         void show();
         void image_scroll(const uint16_t* bitmap, uint16_t w, uint16_t  h, uint8_t brightness=50);
-    
-        
+            
         void bars(uint32_t color, uint8_t width = 3, uint8_t direction = 0, bool deleteBars = true, uint8_t speed = 50);
 
-        void worm_border(uint32_t color, uint8_t direction, uint8_t speed = 50);
+        void border(uint32_t color, uint8_t direction, uint8_t speed = 50);
         void worms_border(uint32_t color, uint32_t color2, uint8_t large, uint8_t spins, uint8_t speed = 50);
+        
     private:
         uint8_t rows;
         uint8_t cols;

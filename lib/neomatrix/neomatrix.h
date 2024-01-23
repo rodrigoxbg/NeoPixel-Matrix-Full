@@ -22,6 +22,9 @@ class NeoMatrix {
     // ===================================================================
     void drawLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint32_t color);
     void drawRect(int16_t x, int16_t y, int16_t w, int16_t h, uint32_t color);
+    void drawFastVLine(int16_t x, int16_t y, int16_t h, uint32_t color);
+    void drawFastHLine(int16_t x, int16_t y, int16_t w, uint32_t color);
+
     void fillRect(int16_t x, int16_t y, int16_t w, int16_t h, uint32_t color);
     void drawCircle(int16_t x0, int16_t y0, int16_t r, uint32_t color);
     void fillCircle(int16_t x0, int16_t y0, int16_t r, uint32_t color);
@@ -42,8 +45,8 @@ class NeoMatrix {
     // Animations Basics
     void text_scroll(String text, uint8_t speed, uint32_t color, uint32_t color2 = 0, uint8_t middle = 5);
     void char_fill(const char c,uint8_t x, uint8_t y, uint32_t color, uint8_t offsetx=7, uint32_t color2 = 0, uint8_t middle = 5);
-
-
+    void char_starwar(const char c,uint8_t posx, uint8_t posy, uint32_t color, uint8_t speed);
+    void text_starwar(const char *string,uint8_t posx, uint8_t posy, uint32_t color, uint8_t speed);
     //====================================================================
     uint8_t charWidth(unsigned char c);
     uint16_t rows;
