@@ -52,6 +52,7 @@ class NeoMatrix {
     uint16_t rows;
     uint16_t cols;
   private:
+    uint8_t * matrixbuff;
     uint8_t digitWidth(int8_t num);
     float calc_wave(uint8_t x, float time, uint8_t amplitud, uint8_t longitud);
     Adafruit_NeoPixel pixels;

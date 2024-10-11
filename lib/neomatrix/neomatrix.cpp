@@ -16,9 +16,7 @@ uint16_t NeoMatrix::numPixels() {return pixels.numPixels();}
 // ----------------------------------------------------------------
 void NeoMatrix::fill(uint8_t r, uint8_t g, uint8_t b) {
   pixels.fill(pixels.Color(r, g, b));
-  
   }
-
 
 void NeoMatrix::pixel(uint16_t col,uint16_t row, uint32_t color) {
   uint16_t index;
@@ -31,7 +29,6 @@ void NeoMatrix::pixel(uint16_t col,uint16_t row, uint32_t color) {
      setPixelColor(index, color);
    }
 }
-
 
 void NeoMatrix::setPixelColor(uint16_t n, uint8_t r, uint8_t g, uint8_t b) {
   pixels.setPixelColor(n, pixels.Color(r, g, b));
@@ -465,3 +462,4 @@ void NeoMatrix::text_starwar(const char *string, uint8_t posx, uint8_t posy, uin
         offset += charWidth(c) + 1;
     }
 }
+

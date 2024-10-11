@@ -1,0 +1,8 @@
+{
+    "general":{
+        "brightness": 50,
+        "mode": 1,
+        "devicename": "CoolLights",
+        "firmware": "1.0.0"
+    }
+}
